@@ -3,6 +3,14 @@ using Producer;
 
 namespace Consumer1;
 
+public class MessageConsumerDefinition : ConsumerDefinition<MessageConsumer>
+{
+    public MessageConsumerDefinition()
+    {
+        EndpointName = "Consumer1";
+    }
+}
+
 public class MessageConsumer : IConsumer<Message>
 {
     private readonly ILogger<MessageConsumer> _logger;
