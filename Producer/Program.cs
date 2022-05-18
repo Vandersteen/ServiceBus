@@ -1,0 +1,44 @@
+using MassTransit;
+using Producer;
+
+IHost host = Host.CreateDefaultBuilder(args)
+    .ConfigureServices(services =>
+    {
+        
+        services.AddLogging(
+                b =>
+                {
+                    b.AddSimpleConsole(
+                        options =>
+                        {
+                            options.IncludeScopes = true;
+                            options.SingleLine = true;
+                            options.TimestampFormat = "hh:mm:ss ";
+                        }
+                    );
+                }
+            );
+
+            services.AddMassTransit(
+                x =>
+                {
+                    x.SetKebabCaseEndpointNameFormatter();
+                    
+                    x.UsingAzureServiceBus(
+                        (ctx, cfg) =>
+                        {
+                            cfg.Host(
+                                "***"
+                            );
+
+                            cfg.ConfigureEndpoints(ctx);
+                        }
+                    );
+                }
+            );
+
+            services.AddHostedService<Producer.Producer>();
+    })
+    .Build();
+
+await host.RunAsync();
