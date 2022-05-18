@@ -23,24 +23,13 @@ IHost host = Host.CreateDefaultBuilder(args)
             x =>
             {
                 x.SetKebabCaseEndpointNameFormatter();
-                x.AddConsumer<MessageConsumer>();
+                x.AddConsumersFromNamespaceContaining<MessageConsumer>();
 
                 x.UsingAzureServiceBus(
                     (ctx, cfg) =>
                     {
                         cfg.Host(
                             "***"
-                        );
-
-                        cfg.SubscriptionEndpoint<Message>(
-                            "consumer2",
-                            e =>
-                            {
-                                // e.UseDelayedRedelivery(r => r.Intervals(TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10)));
-                                // e.UseRetry(r => r.Immediate(3));
-                                    
-                                e.ConfigureConsumer<MessageConsumer>(ctx);
-                            }
                         );
 
                         cfg.ConfigureEndpoints(ctx);
